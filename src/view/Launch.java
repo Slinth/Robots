@@ -72,7 +72,7 @@ public class Launch extends Application {
 		Timeline littleCycle = new Timeline(new KeyFrame(Duration.millis(tempo), new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				terrain.animGrille();
-				updateTerrain(primaryStage);
+//				updateTerrain(primaryStage);
 			}
 		}));
 		
@@ -91,6 +91,7 @@ public class Launch extends Application {
 		    case DOWN: intrus.setDirection(Direction.SUD); intrus.bougerVersDirection(); break;
 		    case RIGHT: intrus.setDirection(Direction.EST); intrus.bougerVersDirection(); break;
 		  }
+		  updateTerrain(primaryStage);
 		});
 	}
 
@@ -102,36 +103,53 @@ public class Launch extends Application {
 	void dessinEnvironnement(Group root)
 	{
 		Cellule[][] grille = terrain.getGrille();
-		// chaque parcelle de l'environnement est verte
-		for(int i=0; i<this.n; i++) {
+
+		for(int i=0; i<this.n; i++) 
+		{
 			for(int j=0; j<this.m; j++)
 			{
 				Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
-				Launch.environnement[i][j].setFill(Color.DARKGREEN);
+
+				if (grille[i][j].isCaisse()) // affichage des caisses
+				{
+					Launch.environnement[i][j].setFill(Color.BROWN);
+				}
+				else if (grille[i][j].isSortie()) // affichage des sorties
+				{
+					Launch.environnement[i][j].setFill(Color.BLUE);
+				}
+				else {
+					Launch.environnement[i][j].setFill(Color.DARKGREEN);
+
+				}
+				Launch.environnement[i][j].setVisible(false);
 				root.getChildren().add(Launch.environnement[i][j]);
 			}
 		}
-		for(int i=0; i<this.n; i++) {
-			for(int j=0; j<this.m; j++)
-			{
-				Cellule cell = grille[i][j];
-				if (cell.isCaisse()) // affichage des caisses
-				{
-					Color colCaisse = Color.BROWN;
-					Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
-					Launch.environnement[i][j].setFill(colCaisse);
-					root.getChildren().add(Launch.environnement[i][j]);
-				}
-				else
-					if (cell.isSortie()) // affichage des sorties
-					{
-						Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
-						Launch.environnement[i][j].setFill(Color.BLUE);
-						root.getChildren().remove(Launch.environnement[i][j] );
-						root.getChildren().add(Launch.environnement[i][j]);
-					}
-			}
-		}
+		
+//		for(int i=0; i<this.n; i++) {
+//			for(int j=0; j<this.m; j++)
+//			{
+//				Cellule cell = grille[i][j];
+//				if (cell.isCaisse()) // affichage des caisses
+//				{
+////					Color colCaisse = Color.BROWN;
+//					Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
+//					Launch.environnement[i][j].setFill(Color.BROWN);
+//					root.getChildren().add(Launch.environnement[i][j]);
+//				}
+//				else
+//					if (cell.isSortie()) // affichage des sorties
+//					{
+//						Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
+//						Launch.environnement[i][j].setFill(Color.BLUE);
+//						root.getChildren().remove(Launch.environnement[i][j] );
+//						root.getChildren().add(Launch.environnement[i][j]);
+//					}
+//				Launch.environnement[i][j].setVisible(false);
+//			}
+//			
+//		}
 		//création des robots, rouges tomate
 		for(Robot  r : terrain.getLesRobots())
 		{
@@ -152,13 +170,13 @@ public class Launch extends Application {
 		for(int i1=0; i1<this.n; i1++) {
 			for(int j=0; j<this.m; j++)
 			{
-				if (terrain.getIntrus().estAPortee(i1, j) ) {
+				if (terrain.getIntrus().isInRange(i1, j) ) {
 					System.out.println("oui");
 					Launch.environnement[i1][j].setVisible(true);
 				}
-				else {
-					Launch.environnement[i1][j].setVisible(false);
-				}
+//				else {
+//					Launch.environnement[i1][j].setVisible(false);
+//				}
 			}
 		}
 	}
@@ -182,33 +200,28 @@ public class Launch extends Application {
 			for(int j=0; j<this.m; j++)
 			{
 				Cellule cell = grille[i][j];
-				if (cell.isHasJustChanged() && cell.isCaisse()) {
+				if ( cell.isCaisse()) {
 					Color colCaisse = Color.BROWN;
 					Launch.environnement[i][j].setFill(colCaisse);
-				} else if (cell.isHasJustChanged() && cell.isSortie()) {
+				} else if (cell.isSortie()) {
 					Color colSortie = Color.BLUE;
 					Launch.environnement[i][j].setFill(colSortie);
-				} else if (cell.isHasJustChanged()){
+				} else {
 					Launch.environnement[i][j].setFill(Color.DARKGREEN);
 				}
-				else {
-					
-				}
+//				else {
+//					
+//				}
 				
-				if (terrain.getIntrus().estAPortee(i, j) ) {
+				if (terrain.getIntrus().isInRange(i, j) ) {
 					System.out.println("oui");
 					Launch.environnement[i][j].setVisible(true);
 				}
 				else {
 					Launch.environnement[i][j].setVisible(false);
 				}
-			}
-			
-			
+			}	
 		}
-		
-		
-		
 		
 	}
 	

@@ -5,10 +5,22 @@ package model;
  *
  */
 public class Cellule {
-	private int x, y;
+	/** Coodonnée en x de la cellule */
+	private int x;
+	
+	/** Coodonnée en y de la cellule */
+	private int y;
+	
+	/** Boolean correspondant à la présence d'une caisse sur la cellule */
 	private boolean caisse;
+	
+	/** Boolean correspondant à la présence d'un robot sur la cellule */
 	private boolean robot;
-	private boolean hasJustChanged;
+	
+	
+//	private boolean hasJustChanged;
+	
+	/** Boolean correspondant à la présence d'une sortie sur la cellule */
 	private boolean sortie;
 	private boolean intrus;
 	
@@ -17,7 +29,7 @@ public class Cellule {
 		this.y = 0;
 		this.caisse = false;
 		this.robot = false;
-		this.hasJustChanged = false;
+//		this.hasJustChanged = false;
 		this.sortie = false;
 		this.intrus = false;
 	}
@@ -27,7 +39,7 @@ public class Cellule {
 		this.y = y;
 		this.caisse = false;
 		this.robot = false;
-		this.hasJustChanged = false;
+//		this.hasJustChanged = false;
 		this.sortie = false;
 		this.intrus = false;
 	}
@@ -37,7 +49,7 @@ public class Cellule {
 		this.y = y;
 		this.caisse = caisse;
 		this.robot = false;
-		this.hasJustChanged = false;
+//		this.hasJustChanged = false;
 		this.sortie = false;
 		this.intrus = false;
 	}
@@ -72,7 +84,7 @@ public class Cellule {
 	
 	public void setRobot(boolean robot) {
 		this.robot = robot;
-		this.hasJustChanged = true;
+//		this.hasJustChanged = true;
 	}
 	
 	public boolean isIntrus() {
@@ -81,12 +93,12 @@ public class Cellule {
 	
 	public void setIntrus(boolean intrus) {
 		this.intrus = intrus;
-		this.hasJustChanged = true;
+//		this.hasJustChanged = true;
 	}
 	
-	public boolean isHasJustChanged() {
-		return hasJustChanged;
-	}
+//	public boolean isHasJustChanged() {
+//		return hasJustChanged;
+//	}
 	
 	public boolean isSortie() {
 		return this.sortie;
@@ -98,7 +110,7 @@ public class Cellule {
 
 	public void prendreCaisse() {
 		this.caisse = false;
-		this.hasJustChanged = true;
+//		this.hasJustChanged = true;
 	}
 	 
 	

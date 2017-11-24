@@ -1,11 +1,6 @@
 package model;
 
 import java.awt.Point;
-import java.util.Random;
-
-import javax.swing.JOptionPane;
-
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /** Cette classe représente l'intrus dont le but est de voler les caisses dans l'entrepot */
@@ -23,7 +18,7 @@ public class Intrus {
 	/** Objet graphique représentant l'intrus */
 	private Circle dessin;
 	
-	/** Taille du pas de l'intrus */
+	/** Taille du pas de l'intrus pour se déplacer graphiquement */
 	private int pas;
 	
 	/** Nombre de caisses que l'intrus a récupéré */
@@ -65,7 +60,7 @@ public class Intrus {
 	}	
 	
 	
-	/** Fait avancer la fourmi dans sa direction si la case devant existe et est non occupee*/
+	/** Fait avancer l'intrus dans sa direction si la case devant existe et n'est ni un intrus ni un robot */
 	public void bougerVersDirection()
 	{
 		Cellule cell = getNextCellule(direction);
@@ -82,43 +77,27 @@ public class Intrus {
 				cell.prendreCaisse();
 				this.nbCaisses++;
 			}
-			
-//			verifierCaisse();
 		}
 	}
 	
-//	public boolean isCaisse(Cellule cell) {
-//		if (cell.isCaisse())
-//	}
 	
-//	/** Verifie si la cellule active possede une caisse */
-//	public void verifierCaisse() {
-//		Cellule[][] grille = terrain.getGrille();
-//		Cellule cell = grille[position.x][position.y];
-//		if (cell.isCaisse()) {
-//			cell.prendreCaisse();
-//			this.nbCaisses++;
-//		}
-//	}
-	
-	/** Verifie si la cellule active est une sortie */
+	/** Verifie si l'intrus est une sortie 
+	 * @return renvoie un boolean si l'intrus est sur une sortie*/
 	public boolean verifierSortie() {
-		Cellule[][] grille = terrain.getGrille();
-		Cellule cell = grille[position.x][position.y];
-		if (cell.isSortie()) {
-			return true;
-		}
-		return false;
+		return terrain.getGrille()[position.x][position.y].isSortie();
 	}
+	
 	
 	/** Verifie si les coordonnées d'une cellule passée en argument sont dans le champ de vision
-	 * @param xCellule  */
-	public boolean estAPortee(int xCellule,int yCellule) {
+	 * @param _xCellule abscisse des coordonnées d'une cellule
+	 * @param _yCellule ordonnée des coordonnées d'une cellule
+	 * @return boolean correspond à la présence d'une cellule dans le champ de vision de l'intrus */
+	public boolean isInRange(int _xCellule,int _yCellule) {
 		int xIntrus = position.x;
 		int yIntrus = position.y;
 //		System.out.println("xCellule : "+xCellule+",yCellule : "+yCellule);
 		
-		if ( (xCellule >= xIntrus -4 && xCellule <= xIntrus + 4 ) && (yCellule <= yIntrus + 4 && yCellule >= yIntrus -4) )  {
+		if ( (_xCellule >= xIntrus + fov*-1 && _xCellule <= xIntrus + fov ) && (_yCellule <= yIntrus + fov && _yCellule >= yIntrus +fov*-1) )  {
 //			System.out.print(" => estAPortee");
 			return true;
 		}
@@ -158,5 +137,4 @@ public class Intrus {
 	public int getNbCaisses() {
 		return this.nbCaisses;
 	}
-	
 }

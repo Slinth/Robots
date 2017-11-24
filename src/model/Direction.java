@@ -4,9 +4,12 @@ import java.awt.Point;
 
 /**type enumere evolue codant les directions des 4 points cardinaux et des 4 points sous forme de vecteur*/
 public enum Direction {
+	
 	NORD(0, 0, -1), NORD_EST(1, 1, -1), EST(2,1,0), SUD_EST(3,1,1), SUD(4,0,1), SUD_OUEST(5,-1,1), OUEST(6,-1,0), NORD_OUEST(7,-1,-1);
+	
 	/**no d'indice de la direction*/
 	int no;
+	
 	/**vecteur directeur*/
 	Point v;
 	
@@ -27,6 +30,7 @@ public enum Direction {
 		int indice = (dir.no + 4) % 8;
 		return tab[indice];
 	}
+	
 	
 	/**
 	 * @param dir direction dont on souhaite calculer les directions voisines
@@ -56,6 +60,7 @@ public enum Direction {
 		return dir;
 	}
 	
+	
 	/**
 	 * @param a coordonnee x du vecteur dont on souhaite la direction
 	 * @param b coordonnee y du vecteur dont on souhaite la direction
@@ -65,8 +70,6 @@ public enum Direction {
 		Point result = new Point( p.x + d.v.x, p.y + d.v.y);
 		return result;
 	}
-	
-	
 	
 	
 	/**retourne une direction tirée aléatoirement
