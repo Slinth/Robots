@@ -108,7 +108,6 @@ public class Launch extends Application {
 			{
 				Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
 				Launch.environnement[i][j].setFill(Color.DARKGREEN);
-				Launch.environnement[i][j].setVisible(false);
 				root.getChildren().add(Launch.environnement[i][j]);
 			}
 		for(int i=0; i<this.n; i++)
@@ -120,7 +119,6 @@ public class Launch extends Application {
 					Color colCaisse = Color.BROWN;
 					Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
 					Launch.environnement[i][j].setFill(colCaisse);
-					Launch.environnement[i][j].setVisible(false);
 					root.getChildren().add(Launch.environnement[i][j]);
 				}
 				else
@@ -128,7 +126,6 @@ public class Launch extends Application {
 					{
 						Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
 						Launch.environnement[i][j].setFill(Color.BLUE);
-						Launch.environnement[i][j].setVisible(false);
 						root.getChildren().remove(Launch.environnement[i][j] );
 						root.getChildren().add(Launch.environnement[i][j]);
 					}
@@ -138,7 +135,6 @@ public class Launch extends Application {
 		for(Robot  r : terrain.getLesRobots())
 		{
 			r.setDessin(new Circle(((this.n)*espace)/2 , ((this.m)*espace)/2, espace/2, Color.TOMATO));
-			r.getDessin().setVisible(false);
 			r.setPas(espace);
 			root.getChildren().add(r.getDessin());
 		}
@@ -171,11 +167,7 @@ public class Launch extends Application {
 			for(int j=0; j<this.m; j++)
 			{
 				Cellule cell = grille[i][j];
-				if (intrus.celluleAPortee(cell)) {
-					System.out.println("I" + intrus.getX() + intrus.getY());
-					System.out.println("C" + cell.getX() + cell.getY());
-					Launch.environnement[i][j].setVisible(true);
-				} else if (cell.isHasJustChanged() && cell.isCaisse()) {
+				if (cell.isHasJustChanged() && cell.isCaisse()) {
 					Color colCaisse = Color.BROWN;
 					Launch.environnement[i][j].setFill(colCaisse);
 				} else if (cell.isHasJustChanged() && cell.isSortie()) {
