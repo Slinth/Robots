@@ -130,7 +130,7 @@ public class Terrain {
 	private void initialiserIntrus() {
 		int i = nbAlea(this.n);
 		int j = nbAlea(this.m);
-		intrus = new Intrus(i, j, this);
+		intrus = new Intrus(i, j, this,4);
 	}
 	
 	/**  
