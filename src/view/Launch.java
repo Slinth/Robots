@@ -103,14 +103,15 @@ public class Launch extends Application {
 	{
 		Cellule[][] grille = terrain.getGrille();
 		// chaque parcelle de l'environnement est verte
-		for(int i=0; i<this.n; i++)
+		for(int i=0; i<this.n; i++) {
 			for(int j=0; j<this.m; j++)
 			{
 				Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
 				Launch.environnement[i][j].setFill(Color.DARKGREEN);
 				root.getChildren().add(Launch.environnement[i][j]);
 			}
-		for(int i=0; i<this.n; i++)
+		}
+		for(int i=0; i<this.n; i++) {
 			for(int j=0; j<this.m; j++)
 			{
 				Cellule cell = grille[i][j];
@@ -130,7 +131,7 @@ public class Launch extends Application {
 						root.getChildren().add(Launch.environnement[i][j]);
 					}
 			}
-
+		}
 		//création des robots, rouges tomate
 		for(Robot  r : terrain.getLesRobots())
 		{
@@ -146,6 +147,20 @@ public class Launch extends Application {
 		root.getChildren().add(i.getDessin());
 		//petit effet de flou général
 		root.setEffect(new BoxBlur(2, 2, 5));
+		
+		System.out.println("Intrus : "+terrain.getIntrus().getPosition().x+","+terrain.getIntrus().getPosition().y);
+		for(int i1=0; i1<this.n; i1++) {
+			for(int j=0; j<this.m; j++)
+			{
+				if (terrain.getIntrus().estAPortee(i1, j) ) {
+					System.out.println("oui");
+					Launch.environnement[i1][j].setVisible(true);
+				}
+				else {
+					Launch.environnement[i1][j].setVisible(false);
+				}
+			}
+		}
 	}
 
 
@@ -156,14 +171,14 @@ public class Launch extends Application {
 		Intrus intrus = this.terrain.getIntrus();
 		for (Robot r : this.terrain.getLesRobots()) {
 			if (r.verifierIntrus()) {
-				new PopUp(primaryStage, "DEFAITE");
+//				new PopUp(primaryStage, "DEFAITE");
 			}
 		}
 		if (intrus.verifierSortie()) new PopUp(primaryStage, "VICTOIRE", intrus.getNbCaisses());
 		
 		
 		Cellule[][] grille = terrain.getGrille();
-		for(int i=0; i<this.n; i++)
+		for(int i=0; i<this.n; i++) {
 			for(int j=0; j<this.m; j++)
 			{
 				Cellule cell = grille[i][j];
@@ -176,7 +191,23 @@ public class Launch extends Application {
 				} else if (cell.isHasJustChanged()){
 					Launch.environnement[i][j].setFill(Color.DARKGREEN);
 				}
+				else {
+					
+				}
+				
+				if (terrain.getIntrus().estAPortee(i, j) ) {
+					System.out.println("oui");
+					Launch.environnement[i][j].setVisible(true);
+				}
+				else {
+					Launch.environnement[i][j].setVisible(false);
+				}
 			}
+			
+			
+		}
+		
+		
 		
 		
 	}
