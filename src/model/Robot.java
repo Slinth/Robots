@@ -63,48 +63,58 @@ public class Robot {	/**position du robot*/
 	}
 
 	/**active les actions du robot selon son etat*/
-	public void evoluer()
-	{
-		Cellule[][] grille = terrain.getGrille();
-		int x = p.x;
-		int y = p.y;
-		switch(etat)
-		{
-		case PATROUILLER: //recherche de l'intrus
-			this.dessin.setFill(Color.GREEN);
-			Point p = chercherPositionIntrus();
-			
-			direction = getNextRandomDirection(); //s'orienter vers une case libre au hasard
-			this.bougerVersDirection();
-			
-			
-			if (intrusVisible(p)) {
-//				System.out.println("DANS LE IF");
-				alerterRobots(p);
-			} 
-			break;
-		case POURSUIVRE:
-			this.dessin.setFill(Color.ORANGE);
-			direction = getBestDirection(); //s'orienter vers la case où l'intrus a été repéré
-			this.bougerVersDirection();
-			
-			if (this.verifierIntrus()) {
-				this.setEtat(EtatRobot.ATTRAPER);
-			} else {
-				this.setEtat(EtatRobot.PATROUILLER);
-			}
-			
-			break;
-		case ATTRAPER:
-			this.dessin.setFill(Color.RED);
-			this.stopPatrouille();
-			break;
-		case STOP:
-			this.dessin.setFill(Color.WHITE);
-			break;
+	public void evoluer() {
+		switch(etat) {
+			case PATROUILLER: //recherche de l'intrus
+				this.dessin.setFill(Color.GREEN);
+				
+				//S'oriente vers une case libre au hasard puis se déplace sur celle-ci
+				direction = getNextRandomDirection(); 
+				this.bougerVersDirection();	
+				
+				/*
+				 * Regarde si l'intrus est présent dans le champ de vision du robot,
+				 * Si oui il donne sa position aux autres robots qui commencent la poursuite
+				 */
+				this.chercherIntrusEtAlerter();
+	
+				break;
+			case POURSUIVRE:
+				this.dessin.setFill(Color.ORANGE);
+				
+				//S'oriente vers la case où l'intrus a été repéré puis s'y déplace
+				direction = getBestDirection(); 
+				this.bougerVersDirection();
+				
+				/*
+				 * Si la case sur lequel est le robot contient également l'intrus, il l'attrape (passe dans l'état ATTRAPER)
+				 * Sinon il regarde si l'intrus est présent dans son champ de vision :
+				 * 		 si oui il continue la poursite en donnant sa nouvelle position aux autre robots
+				 * 		sinon il recommence à patrouiller
+				 */
+				if (this.verifierIntrus()) {
+					this.setEtat(EtatRobot.ATTRAPER);
+				} else {
+					this.chercherIntrusEtAlerter();
+				}
+				break;
+			case ATTRAPER:
+				this.dessin.setFill(Color.RED);
+				
+				//Notifie tous les autres robots qu'il a attrapé l'intrus (i.e. les passe dans l'etat d'arret)
+				this.stopPatrouille();
+				break;
+			case STOP:
+				//Etat symbolisant la fin de la partie 
+				this.dessin.setFill(Color.WHITE);
+				break;
 		}
 	}
 	
+	/**
+	 * Donne la direction vers une cellule libre aléatoire
+	 * @return Direction : une direction vers une cellule libre aléatoire
+	 */
 	private Direction getNextRandomDirection() {
 		Direction d;
 		Direction []dirAlentours = Direction.get3Dir(this.direction);
@@ -133,6 +143,11 @@ public class Robot {	/**position du robot*/
 		return liste;		
 	}
 	
+	
+	/**
+	 * Calcule la direction vers laquelle se diriger pour rejoindre la position de l'intrus
+	 * @return Direction : la direction pour aller vers l'intrus
+	 */
 	private Direction getBestDirection() {
 		int x = p.x;
 		int y = p.y;
@@ -207,6 +222,10 @@ public class Robot {	/**position du robot*/
 		this.dessin = dessin;
 	}
 	
+	/**
+	 * Permet de savoir si l'intrus est sur la cellule actuelle du robot
+	 * @return vrai si la cellule sur laquelle se trouve le robot est également la cellule sur laquelle se trouve l'intrus, faux sinon
+	 */
 	public boolean verifierIntrus() {
 		Cellule[][] grille = terrain.getGrille();
 		Cellule cell = grille[p.x][p.y];
@@ -216,12 +235,16 @@ public class Robot {	/**position du robot*/
 		return false;
 	}
 	
+	/**
+	 * Permet de trouver la position de l'intrus s'il se trouve dans le champ de vision du robot
+	 * @return le point de coordonnées la position de l'intrus, le point de coordonnée (-1,-1) si intrus pas détecté
+	 */
 	public Point chercherPositionIntrus() {
 		Cellule[][] grille = terrain.getGrille();
 		int x = p.x;
 		int y = p.y;
-		int xIntrus = 0;
-		int yIntrus = 0;
+		int xIntrus = -1;
+		int yIntrus = -1;
 		for (int i = 1; i <= 3; i++) {
 			for (int j = 1; j <= 3; j++) {
 				if (x + i < grille.length && y + j < grille[i].length && x - i >= 0 && y - j >= 0) {
@@ -250,24 +273,16 @@ public class Robot {	/**position du robot*/
 						xIntrus = x;
 						yIntrus = y - j;
 					} 
-					else {
-						xIntrus = -1;
-						yIntrus = -1;
-					}
-				} else {
-					xIntrus = -1;
-					yIntrus = -1;
-				}
+				} 
 			}
 		}
-		System.out.println("X : " + xIntrus + "Y : " + yIntrus);
 		return new Point(xIntrus, yIntrus);
 	}
 	
-	public void reinitialiserPositionIntrus() {
-		this.setCoordonneesIntrus(-1, -1);
-	}
 	
+	/**
+	 * Passe tous les robots dans l'état d'arrêt
+	 */
 	public void stopPatrouille() {
 		ArrayList<Robot> tousLesRobots = terrain.getLesRobots();
 		for (Robot r : tousLesRobots) {
@@ -275,6 +290,10 @@ public class Robot {	/**position du robot*/
 		}
 	}
 	
+	/**
+	 * Transmet à tous les robots la position de l'intrus et les passe dans l'état de poursuite
+	 * @param Point donnant la position de l'intrus
+	 */
 	public void alerterRobots(Point p) {
 		ArrayList<Robot> tousLesRobots = terrain.getLesRobots();
 		for (Robot r : tousLesRobots) {
@@ -283,12 +302,30 @@ public class Robot {	/**position du robot*/
 		}
 	}
 	
+	/**
+	 * L'intrus n'est pas visible si les coordonnées du point passé en argument sont (-1,-1)
+	 * @param Point pour lequel il faut tester la visibilité de l'intrus
+	 * @return vrai si l'intrus est dans le champ de vision du robot, faux sinon
+	 */
 	public boolean intrusVisible(Point p) {
 		if (p.x != -1 && p.y != -1) {
 			return true;
 		} else {
 			return false;
 		}
-//		return (positionIntrus.x != -1 && positionIntrus.y != -1);
 	} 
+	
+	/**
+	 * Cherche si l'intrus se situe dans le champ de vision du robot
+	 * Si l'intrus est détecté, il alerte tous les autres robots de sa position
+	 * Sinon il recommence à patrouiller
+	 */
+	public void chercherIntrusEtAlerter( ) {
+		Point p = this.chercherPositionIntrus();
+		if (this.intrusVisible(p)) {
+			this.alerterRobots(p);
+		} else {
+			this.setEtat(EtatRobot.PATROUILLER);
+		}
+	}
 }
