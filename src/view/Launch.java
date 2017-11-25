@@ -35,7 +35,7 @@ public class Launch extends Application {
 	/**taille de la terrain*/
 	private int m;
 	/**taille d'une cellule en pixel*/
-	private int espace = 30;
+	private int espace = 25;
 	private  static Rectangle [][] environnement; 
 
 
@@ -43,7 +43,7 @@ public class Launch extends Application {
 	@Override
 	/**initialisation de l'application graphique*/
 	public void start(Stage primaryStage) {
-		int n = 25; int m = 20;
+		int n = 40; int m = 30;
 		this.terrain = new Terrain(n, m, this.nbRobots, this.pourcentageCaisses);
 		this.n = terrain.getN();
 		this.m = terrain.getM();
@@ -119,8 +119,7 @@ public class Launch extends Application {
 					Launch.environnement[i][j].setFill(Color.BLUE);
 				}
 				else {
-					Launch.environnement[i][j].setFill(Color.DARKGREEN);
-
+					Launch.environnement[i][j].setFill(Color.LIGHTGREY);
 				}
 				Launch.environnement[i][j].setVisible(false);
 				root.getChildren().add(Launch.environnement[i][j]);
@@ -153,7 +152,7 @@ public class Launch extends Application {
 		//création des robots, rouges tomate
 		for(Robot  r : terrain.getLesRobots())
 		{
-			r.setDessin(new Circle(((this.n)*espace)/2 , ((this.m)*espace)/2, espace/2, Color.TOMATO));
+			r.setDessin(new Circle(((this.n)*espace)/2 , ((this.m)*espace)/2, espace/2, Color.GREEN));
 			r.setPas(espace);
 			root.getChildren().add(r.getDessin());
 		}
@@ -166,12 +165,12 @@ public class Launch extends Application {
 		//petit effet de flou général
 		root.setEffect(new BoxBlur(2, 2, 5));
 		
-		System.out.println("Intrus : "+terrain.getIntrus().getPosition().x+","+terrain.getIntrus().getPosition().y);
+//		System.out.println("Intrus : "+terrain.getIntrus().getPosition().x+","+terrain.getIntrus().getPosition().y);
 		for(int i1=0; i1<this.n; i1++) {
 			for(int j=0; j<this.m; j++)
 			{
 				if (terrain.getIntrus().isInRange(i1, j) ) {
-					System.out.println("oui");
+//					System.out.println("oui");
 					Launch.environnement[i1][j].setVisible(true);
 				}
 //				else {
@@ -188,8 +187,8 @@ public class Launch extends Application {
 	{
 		Intrus intrus = this.terrain.getIntrus();
 		for (Robot r : this.terrain.getLesRobots()) {
-			if (r.verifierIntrus()) {
-//				new PopUp(primaryStage, "DEFAITE");
+			if (r.getEtat() == EtatRobot.STOP) {
+				new PopUp(primaryStage, "DEFAITE");
 			}
 		}
 		if (intrus.verifierSortie()) new PopUp(primaryStage, "VICTOIRE", intrus.getNbCaisses());
@@ -207,14 +206,14 @@ public class Launch extends Application {
 					Color colSortie = Color.BLUE;
 					Launch.environnement[i][j].setFill(colSortie);
 				} else {
-					Launch.environnement[i][j].setFill(Color.DARKGREEN);
+					Launch.environnement[i][j].setFill(Color.LIGHTGREY);
 				}
 //				else {
 //					
 //				}
 				
 				if (terrain.getIntrus().isInRange(i, j) ) {
-					System.out.println("oui");
+//					System.out.println("oui");
 					Launch.environnement[i][j].setVisible(true);
 				}
 				else {
