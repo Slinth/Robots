@@ -22,6 +22,12 @@ import model.Robot;
 import model.Terrain;
 
 public class Launch extends Application {
+	/** Port de communication, en dehors de l'interval [1;1024] */
+    private int PORT = 7777;
+    /** Nom du serveur ou un nï¿½ IP ; null si test sur machine locale */
+    private String serverName = null;
+    
+    
 	/**terrain liee a cet objet graphique*/
 	private Terrain terrain;
 	/**nb de fourmis*/
@@ -47,14 +53,14 @@ public class Launch extends Application {
 		this.terrain = new Terrain(n, m, this.nbRobots, this.pourcentageCaisses);
 		this.n = terrain.getN();
 		this.m = terrain.getM();
-		construireScenePourFourmis(primaryStage);
+		construireScenePourRobots(primaryStage);
 
 	}
 
 
 
-	/**construction du théatre et de la scène */
-	void construireScenePourFourmis(Stage primaryStage) 
+	/**construction du thÃ©atre et de la scÃ¨ne */
+	void construireScenePourRobots(Stage primaryStage) 
 	{
 		//definir la scene principale
 		Group root = new Group();
@@ -72,7 +78,6 @@ public class Launch extends Application {
 		Timeline littleCycle = new Timeline(new KeyFrame(Duration.millis(tempo), new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				terrain.animGrille();
-//				updateTerrain(primaryStage);
 			}
 		}));
 		
@@ -84,7 +89,6 @@ public class Launch extends Application {
 		Circle dessinIntrus = intrus.getDessin();
 		dessinIntrus.requestFocus();
 		dessinIntrus.setOnKeyPressed(e->{
-		  //System.err.println(e.getCode());
 		  switch(e.getCode()) {
 		    case UP: intrus.setDirection(Direction.NORD); intrus.bougerVersDirection(); break;
 		    case LEFT: intrus.setDirection(Direction.OUEST); intrus.bougerVersDirection(); break;
@@ -125,34 +129,11 @@ public class Launch extends Application {
 				root.getChildren().add(Launch.environnement[i][j]);
 			}
 		}
-		
-//		for(int i=0; i<this.n; i++) {
-//			for(int j=0; j<this.m; j++)
-//			{
-//				Cellule cell = grille[i][j];
-//				if (cell.isCaisse()) // affichage des caisses
-//				{
-////					Color colCaisse = Color.BROWN;
-//					Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
-//					Launch.environnement[i][j].setFill(Color.BROWN);
-//					root.getChildren().add(Launch.environnement[i][j]);
-//				}
-//				else
-//					if (cell.isSortie()) // affichage des sorties
-//					{
-//						Launch.environnement[i][j] = new Rectangle((i+1)*(espace), (j+1)*(espace), espace, espace);
-//						Launch.environnement[i][j].setFill(Color.BLUE);
-//						root.getChildren().remove(Launch.environnement[i][j] );
-//						root.getChildren().add(Launch.environnement[i][j]);
-//					}
-//				Launch.environnement[i][j].setVisible(false);
-//			}
-//			
-//		}
-		//création des robots, rouges tomate
+		//crÃ©ation des robots, rouges tomate
 		for(Robot  r : terrain.getLesRobots())
 		{
 			r.setDessin(new Circle(((this.n)*espace)/2 , ((this.m)*espace)/2, espace/2, Color.GREEN));
+//			r.getDessin().setVisible(false);
 			r.setPas(espace);
 			root.getChildren().add(r.getDessin());
 		}
@@ -162,31 +143,32 @@ public class Launch extends Application {
 		i.setPas(espace);
 		i.setDessin(new Circle((i.getX() * espace), (i.getY() * espace), espace / 2, Color.YELLOW));
 		root.getChildren().add(i.getDessin());
-		//petit effet de flou général
+		//petit effet de flou gÃ©nÃ©ral
 		root.setEffect(new BoxBlur(2, 2, 5));
 		
-//		System.out.println("Intrus : "+terrain.getIntrus().getPosition().x+","+terrain.getIntrus().getPosition().y);
 		for(int i1=0; i1<this.n; i1++) {
 			for(int j=0; j<this.m; j++)
 			{
 				if (terrain.getIntrus().isInRange(i1, j) ) {
-//					System.out.println("oui");
 					Launch.environnement[i1][j].setVisible(true);
 				}
-//				else {
-//					Launch.environnement[i1][j].setVisible(false);
-//				}
 			}
 		}
 	}
 
 
 
-	/**modification de la couleur des cellules en fonction de la dose de nourriture et de phéromones*/
+	/**modification de la couleur des cellules en fonction de la dose de nourriture et de phÃ©romones*/
 	private void updateTerrain(Stage primaryStage)
 	{
 		Intrus intrus = this.terrain.getIntrus();
 		for (Robot r : this.terrain.getLesRobots()) {
+//			if (r.isInRange()) {
+//				r.getDessin().setVisible(true);
+//			} else {
+//				r.getDessin().setVisible(false);
+//			}
+			
 			if (r.getEtat() == EtatRobot.STOP) {
 				new PopUp(primaryStage, "DEFAITE");
 			}
@@ -199,6 +181,17 @@ public class Launch extends Application {
 			for(int j=0; j<this.m; j++)
 			{
 				Cellule cell = grille[i][j];
+				if (terrain.getIntrus().isInRange(i, j) ) {
+					Launch.environnement[i][j].setVisible(true);
+				}
+				else {
+					if (cell.isVisitee()) {
+						Launch.environnement[i][j].setVisible(true);
+					} else {
+						Launch.environnement[i][j].setVisible(false);
+					}
+				}
+				
 				if ( cell.isCaisse()) {
 					Color colCaisse = Color.BROWN;
 					Launch.environnement[i][j].setFill(colCaisse);
@@ -208,26 +201,19 @@ public class Launch extends Application {
 				} else {
 					Launch.environnement[i][j].setFill(Color.LIGHTGREY);
 				}
-//				else {
-//					
-//				}
 				
-				if (terrain.getIntrus().isInRange(i, j) ) {
-//					System.out.println("oui");
-					Launch.environnement[i][j].setVisible(true);
-				}
-				else {
-					Launch.environnement[i][j].setVisible(false);
-				}
+				
 			}	
 		}
 		
 	}
 	
-	private void changerCouleurRobots() {
-		for (Robot r : this.terrain.getLesRobots()) {
-			r.setDessin(new Circle(((this.n)*espace)/2 , ((this.m)*espace)/2, espace/2, Color.WHITE));
-		}
+	public String getServerName() {
+		return this.serverName;
+	}
+	
+	public int getPort() {
+		return this.PORT;
 	}
 
 

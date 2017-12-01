@@ -31,7 +31,7 @@ public class Robot {	/**position du robot*/
 
 	public Robot(){}
 
-	/**construit une fourmi
+	/**construit un robot
 	 * @param x : coordonee x initiale du robot
 	 * @param y : coordonee y initiale du robot
 	 * @param terrain : terrain ou se trouve le robot
@@ -190,6 +190,11 @@ public class Robot {	/**position du robot*/
 			dessin.setCenterX((p.x+1) * pas + (pas / 2));
 			dessin.setCenterY((p.y+2) * pas - (pas / 2));
 			cell.setRobot(true);
+//			if (this.isInRange()) {
+//				this.getDessin().setVisible(true);
+//			} else {
+//				this.getDessin().setVisible(false);
+//			}
 		}
 	}
 	
@@ -327,5 +332,19 @@ public class Robot {	/**position du robot*/
 		} else {
 			this.setEtat(EtatRobot.PATROUILLER);
 		}
+	}
+	
+	/** Verifie si le robot est dans le champ de vision de l'intrus, si oui il devient visible
+	 * @return boolean egal a vrai si le robot est dans le champ de vision d'un intrus et faux sinon */
+	public boolean isInRange() {
+		int x = this.p.x;
+		int y = this.p.y;
+		int xIntrus = this.positionIntrus.x;
+		int yIntrus = this.positionIntrus.y;
+		
+		if ( (x >= xIntrus + 3 && x <= xIntrus + 4 ) && (y <= yIntrus + 4 && y >= yIntrus + 3) )  {
+			return true;
+		}
+		return false;
 	}
 }

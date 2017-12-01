@@ -72,6 +72,7 @@ public class Intrus {
 			dessin.setCenterX((position.x+1) * pas + (pas / 2));
 			dessin.setCenterY((position.y+2) * pas - (pas / 2));
 			cell.setIntrus(true);
+			cell.setVisitee(true);
 			
 			if (cell.isCaisse()) {
 				cell.prendreCaisse();
@@ -95,13 +96,10 @@ public class Intrus {
 	public boolean isInRange(int _xCellule,int _yCellule) {
 		int xIntrus = position.x;
 		int yIntrus = position.y;
-//		System.out.println("xCellule : "+xCellule+",yCellule : "+yCellule);
 		
 		if ( (_xCellule >= xIntrus + fov*-1 && _xCellule <= xIntrus + fov ) && (_yCellule <= yIntrus + fov && _yCellule >= yIntrus +fov*-1) )  {
-//			System.out.print(" => estAPortee");
 			return true;
 		}
-//		System.out.print(" => pas � port�e");
 		return false;
 	}
 

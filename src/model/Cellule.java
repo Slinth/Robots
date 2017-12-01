@@ -11,17 +11,19 @@ public class Cellule {
 	/** Coodonnée en y de la cellule */
 	private int y;
 	
-	/** Boolean correspondant à la présence d'une caisse sur la cellule */
+	/** Booleen correspondant à la présence d'une caisse sur la cellule */
 	private boolean caisse;
 	
-	/** Boolean correspondant à la présence d'un robot sur la cellule */
+	/** Booleen correspondant à la présence d'un robot sur la cellule */
 	private boolean robot;
 	
+	/** Booleen indiquant si l'intrus est déjà passé sur la cellule */
+	private boolean visitee;
 	
-//	private boolean hasJustChanged;
-	
-	/** Boolean correspondant à la présence d'une sortie sur la cellule */
+	/** Booleen correspondant à la présence d'une sortie sur la cellule */
 	private boolean sortie;
+	
+	/** Booleen correspondant à la présence d'un intrus sur la cellule */
 	private boolean intrus;
 	
 	public Cellule() {
@@ -29,7 +31,6 @@ public class Cellule {
 		this.y = 0;
 		this.caisse = false;
 		this.robot = false;
-//		this.hasJustChanged = false;
 		this.sortie = false;
 		this.intrus = false;
 	}
@@ -39,7 +40,6 @@ public class Cellule {
 		this.y = y;
 		this.caisse = false;
 		this.robot = false;
-//		this.hasJustChanged = false;
 		this.sortie = false;
 		this.intrus = false;
 	}
@@ -49,7 +49,6 @@ public class Cellule {
 		this.y = y;
 		this.caisse = caisse;
 		this.robot = false;
-//		this.hasJustChanged = false;
 		this.sortie = false;
 		this.intrus = false;
 	}
@@ -84,7 +83,6 @@ public class Cellule {
 	
 	public void setRobot(boolean robot) {
 		this.robot = robot;
-//		this.hasJustChanged = true;
 	}
 	
 	public boolean isIntrus() {
@@ -93,12 +91,7 @@ public class Cellule {
 	
 	public void setIntrus(boolean intrus) {
 		this.intrus = intrus;
-//		this.hasJustChanged = true;
 	}
-	
-//	public boolean isHasJustChanged() {
-//		return hasJustChanged;
-//	}
 	
 	public boolean isSortie() {
 		return this.sortie;
@@ -110,9 +103,13 @@ public class Cellule {
 
 	public void prendreCaisse() {
 		this.caisse = false;
-//		this.hasJustChanged = true;
 	}
-	 
 	
+	public void setVisitee(boolean visite) {
+		this.visitee = visite;
+	}
 	
+	public boolean isVisitee() {
+		return this.visitee;
+	}
 }
