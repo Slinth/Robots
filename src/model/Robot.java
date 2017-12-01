@@ -79,6 +79,12 @@ public class Robot {	/**position du robot*/
 				this.chercherIntrusEtAlerter();
 	
 				break;
+			case ATTRAPER:
+				this.dessin.setFill(Color.RED);
+				
+				//Notifie tous les autres robots qu'il a attrapé l'intrus (i.e. les passe dans l'etat d'arret)
+				this.stopPatrouille();
+				break;
 			case POURSUIVRE:
 				this.dessin.setFill(Color.ORANGE);
 				
@@ -98,12 +104,7 @@ public class Robot {	/**position du robot*/
 					this.chercherIntrusEtAlerter();
 				}
 				break;
-			case ATTRAPER:
-				this.dessin.setFill(Color.RED);
-				
-				//Notifie tous les autres robots qu'il a attrapé l'intrus (i.e. les passe dans l'etat d'arret)
-				this.stopPatrouille();
-				break;
+			
 			case STOP:
 				//Etat symbolisant la fin de la partie 
 				this.dessin.setFill(Color.WHITE);
@@ -235,6 +236,8 @@ public class Robot {	/**position du robot*/
 		Cellule[][] grille = terrain.getGrille();
 		Cellule cell = grille[p.x][p.y];
 		if (cell.isIntrus()) {
+			System.out.println("INTRUS SUR LA CELL");
+			System.out.println(this.etat);
 			return true;
 		}
 		return false;
@@ -303,7 +306,9 @@ public class Robot {	/**position du robot*/
 		ArrayList<Robot> tousLesRobots = terrain.getLesRobots();
 		for (Robot r : tousLesRobots) {
 			r.setCoordonneesIntrus(p.x, p.y);
-			r.setEtat(EtatRobot.POURSUIVRE);
+			if (!(r.getEtat() == EtatRobot.ATTRAPER)) {
+				r.setEtat(EtatRobot.POURSUIVRE);
+			}
 		}
 	}
 	

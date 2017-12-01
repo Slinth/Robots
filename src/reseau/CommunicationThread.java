@@ -10,7 +10,7 @@ import view.Launch;
 
 abstract  class CommunicationThread extends Thread {
     /** Port de communication*/
-    public static int PORT = 7777;
+    public static int PORT = 5555;
     
     /** Socket du serveur */
     public ServerSocket s;
